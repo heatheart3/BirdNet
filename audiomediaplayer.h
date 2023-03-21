@@ -7,6 +7,9 @@
 #include<QBoxLayout>
 #include<QUrl>
 #include<QAudioOutput>
+#include<QFileDialog>
+#include<QSlider>
+#include<QLabel>
 class audioMediaPlayer : public QWidget
 {
     Q_OBJECT
@@ -20,6 +23,10 @@ private:
     QPushButton *playBtn;
     QPushButton *nextBtn;
     QPushButton *backBtn;
+    QSlider *timeSlider;
+    QLabel *curPlayTime;
+    QLabel *totalPlayTime;
+
 private slots:
     void changerStatus();
 
