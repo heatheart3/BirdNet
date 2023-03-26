@@ -2,8 +2,9 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout,QVBo
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
 from PyQt5.QtCore import QUrl,Qt
 from PyQt5.QtGui import QIcon
-from AuditoFeaturePicture import testDraw
-
+from AuditoFeaturePicture import Drawpic
+import librosa
+import numpy as np
 
 
 class BRLPlayer(QWidget):
@@ -26,7 +27,7 @@ class BRLPlayer(QWidget):
         self.player = QMediaPlayer(self)
         self.playerList = QMediaPlaylist(self)
         self.playSlider = QSlider(Qt.Horizontal,self)
-        self.fig = testDraw()
+        self.fig = Drawpic()
 
 
         # 各部件细节设置
@@ -39,9 +40,10 @@ class BRLPlayer(QWidget):
         self.player.setMedia(QMediaContent(QUrl.fromLocalFile("E:/download/Music/complexity.mp3")))
         self.player.stop()
         # 进度条设置
+
         #matplotlib绘图设置
-        data = list(range(1000))
-        self.fig.ax1.plot(data)
+        mel_feature,sr = self.extract_melspec()
+        librosa.display.specshow(mel_feature, sr=sr, x_axis='time', y_axis='mel', ax=self.fig.ax1)
 
         # 布局设置
         lh1 = QHBoxLayout()
@@ -57,7 +59,20 @@ class BRLPlayer(QWidget):
         self.setLayout(lmain)
 
 
+    def extract_melspec(self):
+        path = "E:/download/Music/XC769195 - 南极鸬鹚 - Leucocarbo bransfieldensis.mp3"
+        y, sr = librosa.load(path, sr=16000)
+        y = y.astype(np.double)
+        # 0.025s
+        framelength = 0.025
+        # NFFT点数=0.025*fs
+        framesize = int(framelength * sr)
 
+        # 提取mel特征
+        mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, hop_length=512, n_fft=1024)
+        # 转化为log形式
+        mel_spect_dB = librosa.power_to_db(mel_spect)
+        return mel_spect_dB,sr
 
 
 
