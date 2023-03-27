@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-
 import BRLPlayer
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget

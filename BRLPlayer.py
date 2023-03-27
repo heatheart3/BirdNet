@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout,QVBoxLayout, QSlider
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout,QVBoxLayout, QSlider,QLabel
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
 from PyQt5.QtCore import QUrl,Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from AuditoFeaturePicture import Drawpic
 import librosa
+from matplotlib import figure
 import numpy as np
 
 
@@ -16,11 +17,13 @@ class BRLPlayer(QWidget):
         self.btnNext = None
         self.btnPlay = None
         self.fig = None
+        self.piclab = None
         self.initUI()
+        self.setFixedSize(1000,1000)
 
 
     def initUI(self):
-        # 创建组件成员：三个按键
+        # 创建组件成员：三个按键, 播放器，播放列表，进度条，matplotlib组件，图片
         self.btnPlay = QPushButton(self)
         self.btnNext = QPushButton(self)
         self.btnPrev = QPushButton(self)
@@ -28,6 +31,7 @@ class BRLPlayer(QWidget):
         self.playerList = QMediaPlaylist(self)
         self.playSlider = QSlider(Qt.Horizontal,self)
         self.fig = Drawpic()
+        self.piclab = QLabel(self)
 
 
         # 各部件细节设置
@@ -35,6 +39,8 @@ class BRLPlayer(QWidget):
         self.btnPlay.setText("Play")
         self.btnPrev.setText("Prev")
         self.btnNext.setText("Next")
+        self.btnPlay.clicked.connect(self.changeSize)
+
         # 播放器部分设置
         self.player.setPlaylist(self.playerList)
         self.player.setMedia(QMediaContent(QUrl.fromLocalFile("./complexity.mp3")))
@@ -44,6 +50,12 @@ class BRLPlayer(QWidget):
         #matplotlib绘图设置
         mel_feature,sr = self.extract_melspec()
         librosa.display.specshow(mel_feature, sr=sr, x_axis='time', y_axis='mel', ax=self.fig.ax1)
+        figure0 = self.fig.get_fig()
+        figure0.savefig("./melSpectrogram.png")
+        #图片显示设置
+        self.piclab.setPixmap(QPixmap("./melSpectrogram.png"))
+        self.piclab.setScaledContents(True)
+
 
         # 布局设置
         lh1 = QHBoxLayout()
@@ -53,6 +65,7 @@ class BRLPlayer(QWidget):
         lv1 = QVBoxLayout()
         lv1.addWidget(self.playSlider)
         lmain = QVBoxLayout()
+        lmain.addWidget(self.piclab)
         lmain.addWidget(self.fig)
         lmain.addLayout(lv1)
         lmain.addLayout(lh1)
@@ -74,6 +87,8 @@ class BRLPlayer(QWidget):
         mel_spect_dB = librosa.power_to_db(mel_spect)
         return mel_spect_dB,sr
 
+    def changeSize(self):
+        self.fig.get_fig().set_size_inches(h = 10 ,w = 10)
 
 
 
