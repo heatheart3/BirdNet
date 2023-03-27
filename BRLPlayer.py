@@ -37,7 +37,7 @@ class BRLPlayer(QWidget):
         self.btnNext.setText("Next")
         # 播放器部分设置
         self.player.setPlaylist(self.playerList)
-        self.player.setMedia(QMediaContent(QUrl.fromLocalFile("E:/download/Music/complexity.mp3")))
+        self.player.setMedia(QMediaContent(QUrl.fromLocalFile("./complexity.mp3")))
         self.player.stop()
         # 进度条设置
 
@@ -60,7 +60,7 @@ class BRLPlayer(QWidget):
 
 
     def extract_melspec(self):
-        path = "E:/download/Music/XC769195 - 南极鸬鹚 - Leucocarbo bransfieldensis.mp3"
+        path = "./南极鸬鹚.mp3"
         y, sr = librosa.load(path, sr=16000)
         y = y.astype(np.double)
         # 0.025s
