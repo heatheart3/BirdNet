@@ -1,16 +1,17 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout,QVBoxLayout, QSlider,QLabel
+from PyQt5.QtWidgets import (QWidget, QPushButton, QHBoxLayout,
+                             QVBoxLayout, QSlider, QLabel)
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
 from PyQt5.QtCore import QUrl,Qt
-from PyQt5.QtGui import QIcon, QPixmap
-from AuditoFeaturePicture import Drawpic
+from PyQt5.QtGui import QPixmap
+from src.AuditoFeaturePicture import Drawpic
 import librosa
-from matplotlib import figure
 import numpy as np
 
 
 class BRLPlayer(QWidget):
     def __init__(self):
         super().__init__()
+        self.playSlider = None
         self.playerList = None
         self.player = None
         self.btnPrev = None
@@ -21,7 +22,6 @@ class BRLPlayer(QWidget):
         self.initUI()
         self.setFixedSize(1000,1000)
 
-
     def initUI(self):
         # 创建组件成员：三个按键, 播放器，播放列表，进度条，matplotlib组件，图片
         self.btnPlay = QPushButton(self)
@@ -31,8 +31,7 @@ class BRLPlayer(QWidget):
         self.playerList = QMediaPlaylist(self)
         self.playSlider = QSlider(Qt.Horizontal,self)
         self.fig = Drawpic()
-        self.piclab = QLabel(self)
-
+        # self.piclab = QLabel(self)
 
         # 各部件细节设置
         # 按键配置
@@ -43,18 +42,18 @@ class BRLPlayer(QWidget):
 
         # 播放器部分设置
         self.player.setPlaylist(self.playerList)
-        self.player.setMedia(QMediaContent(QUrl.fromLocalFile("./complexity.mp3")))
-        self.player.stop()
+        self.player.setMedia(QMediaContent(QUrl.fromLocalFile('./mediaFiles/complexity.mp3')))
+        self.player.play()
         # 进度条设置
 
-        #matplotlib绘图设置
+        # matplotlib绘图设置
         mel_feature,sr = self.extract_melspec()
         librosa.display.specshow(mel_feature, sr=sr, x_axis='time', y_axis='mel', ax=self.fig.ax1)
         figure0 = self.fig.get_fig()
-        figure0.savefig("./melSpectrogram.png")
-        #图片显示设置
-        self.piclab.setPixmap(QPixmap("./melSpectrogram.png"))
-        self.piclab.setScaledContents(True)
+        figure0.savefig("./mediaFiles/melSpectrogram.png")
+        # 图片显示设置
+        # self.piclab.setPixmap(QPixmap("./mediaFiles/melSpectrogram.png"))
+        # self.piclab.setScaledContents(True)
 
 
         # 布局设置
@@ -71,9 +70,8 @@ class BRLPlayer(QWidget):
         lmain.addLayout(lh1)
         self.setLayout(lmain)
 
-
     def extract_melspec(self):
-        path = "./南极鸬鹚.mp3"
+        path = "./mediaFiles/南极鸬鹚.mp3"
         y, sr = librosa.load(path, sr=16000)
         y = y.astype(np.double)
         # 0.025s
@@ -85,10 +83,10 @@ class BRLPlayer(QWidget):
         mel_spect = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, hop_length=512, n_fft=1024)
         # 转化为log形式
         mel_spect_dB = librosa.power_to_db(mel_spect)
-        return mel_spect_dB,sr
+        return mel_spect_dB, sr
 
     def changeSize(self):
-        self.fig.get_fig().set_size_inches(h = 10 ,w = 10)
+        self.fig.get_fig().set_size_inches(h=10, w=10)
 
 
 

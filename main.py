@@ -1,13 +1,10 @@
-import BRLPlayer
+from src import BRLPlayer
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget
-import librosa
-import numpy as np
-
+from src.MainWindow import BRLMainWindow
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    w = QWidget()
-    p = BRLPlayer.BRLPlayer()
+    p = BRLMainWindow()
     p.show()
     sys.exit(app.exec_())
