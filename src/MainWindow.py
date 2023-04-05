@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QWidget, QMainWindow, QAction)
+from PyQt5.QtWidgets import (QWidget, QMainWindow, QAction,QVBoxLayout)
 from src.BRLPlayer import BRLPlayer
 
 
@@ -7,7 +7,7 @@ class BRLMainWindow(QMainWindow):
         super().__init__()
         self.BRLPlayer = BRLPlayer()
         self.initUI()
-        self.setFixedSize(1200, 1200)
+        self.mainWindowConfig()
 
     def initUI(self):
         # 菜单栏设置
@@ -21,4 +21,8 @@ class BRLMainWindow(QMainWindow):
         menufile.addAction(aReset)
         menufile.addAction(aClose)
 
+        # 主部件（BRLPlayer)启动
         self.setCentralWidget(self.BRLPlayer)
+
+    def mainWindowConfig(self):
+        self.resize(1500, 600)

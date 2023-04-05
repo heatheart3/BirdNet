@@ -14,8 +14,7 @@ class GraphicView(QGraphicsView):
         self.gr_scene = graphic_scene  # 将scene传入此处托管，方便在view中维护
         self.parent = parent
         self.init_ui()
-        self.scale(0.5, 0.5)
-        self.setFixedSize(1000, 1000)
+        self.resize(1000,1000)
 
     def init_ui(self):
         self.setScene(self.gr_scene)
@@ -49,6 +48,8 @@ w = QWidget()
 pic = PixItem("../mediaFiles/melSpectrogram.png")
 scene = QGraphicsScene()
 scene.addItem(pic)
+#scene.setSceneRect(0,0, pic.pic.width(), pic.pic.height())
 graphic = GraphicView(scene, parent=w)
+graphic.fitInView(pic)
 w.show()
 sys.exit(app.exec_())

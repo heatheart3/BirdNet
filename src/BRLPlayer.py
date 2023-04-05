@@ -1,11 +1,12 @@
 from PyQt5.QtWidgets import (QWidget, QPushButton, QHBoxLayout,
                              QVBoxLayout, QSlider, QLabel)
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaPlaylist, QMediaContent
-from PyQt5.QtCore import QUrl,Qt
+from PyQt5.QtCore import QUrl, Qt
 from PyQt5.QtGui import QPixmap
 from src.AuditoFeaturePicture import Drawpic
 import librosa
 import numpy as np
+from matplotlib import figure
 
 
 class BRLPlayer(QWidget):
@@ -18,9 +19,8 @@ class BRLPlayer(QWidget):
         self.btnNext = None
         self.btnPlay = None
         self.fig = None
-        self.piclab = None
+        self.picLab = None
         self.initUI()
-        self.setFixedSize(1000,1000)
 
     def initUI(self):
         # 创建组件成员：三个按键, 播放器，播放列表，进度条，matplotlib组件，图片
@@ -31,7 +31,6 @@ class BRLPlayer(QWidget):
         self.playerList = QMediaPlaylist(self)
         self.playSlider = QSlider(Qt.Horizontal,self)
         self.fig = Drawpic()
-        # self.piclab = QLabel(self)
 
         # 各部件细节设置
         # 按键配置
@@ -49,11 +48,9 @@ class BRLPlayer(QWidget):
         # matplotlib绘图设置
         mel_feature,sr = self.extract_melspec()
         librosa.display.specshow(mel_feature, sr=sr, x_axis='time', y_axis='mel', ax=self.fig.ax1)
-        figure0 = self.fig.get_fig()
+        figure0 = self.fig.get_fig() #type:figure.Figure
         figure0.savefig("./mediaFiles/melSpectrogram.png")
         # 图片显示设置
-        # self.piclab.setPixmap(QPixmap("./mediaFiles/melSpectrogram.png"))
-        # self.piclab.setScaledContents(True)
 
 
         # 布局设置
@@ -64,7 +61,6 @@ class BRLPlayer(QWidget):
         lv1 = QVBoxLayout()
         lv1.addWidget(self.playSlider)
         lmain = QVBoxLayout()
-        lmain.addWidget(self.piclab)
         lmain.addWidget(self.fig)
         lmain.addLayout(lv1)
         lmain.addLayout(lh1)
